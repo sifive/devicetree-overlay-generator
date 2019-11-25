@@ -1,7 +1,7 @@
 # Copyright (c) 2019 SiFive Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-all: virtualenv
+all: test
 
 venv/bin/activate:
 	python3 -m venv venv
@@ -10,6 +10,14 @@ venv/bin/activate:
 
 .PHONY: virtualenv
 virtualenv: venv/bin/activate
+
+.PHONY: test-lint
+test-lint: venv/bin/activate generate_testbench_overlay.py
+	. $< && pylint generate_testbench_overlay
+test: test-lint
+
+.PHONY: test
+test:
 
 .PHONY: clean
 clean:
