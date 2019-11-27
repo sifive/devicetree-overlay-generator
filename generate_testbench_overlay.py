@@ -38,6 +38,12 @@ def get_boot_hart(tree):
             return hart
     return riscv_harts[0]
 
+def number_to_cells(num, num_cells):
+    cells = []
+    for i in range(num_cells):
+        cells.insert(0, (0xFFFFFFFF & (num >> (32 * i))))
+    return " ".join(["0x%x" % x for x in cells])
+
 def attach_testrams(tree, overlay):
     """Generate testrams attached to ports in the overlay
 
@@ -47,25 +53,31 @@ def attach_testrams(tree, overlay):
     testram_count = 0
     for port in tree.match("sifive,.*port"):
         ranges = port.get_ranges()
-        child_address = ranges[0][1]
+        address = ranges[0][0]
         size = min(ranges[0][2], CAP_SIZE_FOR_VCS)
+
+        num_address_cells = port.get_field("#address-cells")
+        num_size_cells = port.get_field("#size-cells")
+
+        address_cells = number_to_cells(address, num_address_cells)
+        size_cells = number_to_cells(size, num_size_cells)
 
         port.children.append(pydevicetree.Node.from_dts("""
             testram%d: testram@%x {
                 compatible = "sifive,testram0";
-                reg = <0x%x 0x%x>;
+                reg = <%s %s>;
                 reg-names = "mem";
             };
-        """ % (testram_count, child_address, child_address, size)))
+        """ % (testram_count, address, address_cells, size_cells)))
         overlay.children.append(pydevicetree.Node.from_dts("""
         &%s {
             testram%d: testram@%x {
                 compatible = "sifive,testram0";
-                reg = <0x%x 0x%x>;
+                reg = <%s %s>;
                 reg-names = "mem";
             };
         };
-        """ % (port.label, testram_count, child_address, child_address, size)))
+        """ % (port.label, testram_count, address, address_cells, size_cells)))
 
         testram_count += 1
 
