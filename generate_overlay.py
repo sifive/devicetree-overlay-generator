@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2019 SiFive Inc.
+# SPDX-License-Identifier: Apache-2.0
 
 """
 This program generates Devicetree overlays given the devicetree for the core

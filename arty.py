@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2019 SiFive Inc.
+# SPDX-License-Identifier: Apache-2.0
 
 """
 This is a python script for generating RTL testbench Devicetree overlays from the Devicetree
