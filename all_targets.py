@@ -26,6 +26,12 @@ PORTS = ["sifive,%s-%s-port" % (protocol, port_type) \
 
 CAP_SIZE_FOR_VCS = 0x1fffffff
 
+STDOUT_DEVICES = [
+    "sifive,uart0",
+    "sifive,trace",
+    "ucb,htif0",
+]
+
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
     riscv_harts = tree.match("^riscv$")
@@ -40,3 +46,10 @@ def number_to_cells(num, num_cells):
     for i in range(num_cells):
         cells.insert(0, (0xFFFFFFFF & (num >> (32 * i))))
     return " ".join(["0x%x" % x for x in cells])
+
+def get_stdout(tree):
+    """Given a tree, return teh node which should be used as stdout"""
+    for compat in STDOUT_DEVICES:
+        nodes = tree.match(compat)
+        if len(nodes) > 0:
+            return nodes[0]

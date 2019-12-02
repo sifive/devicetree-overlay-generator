@@ -9,7 +9,7 @@ import sys
 
 import pydevicetree
 
-from all_targets import PORTS, CAP_SIZE_FOR_VCS, get_boot_hart, number_to_cells
+from all_targets import PORTS, CAP_SIZE_FOR_VCS, get_boot_hart, get_stdout, number_to_cells
 
 def attach_testrams(tree, overlay):
     """Generate testrams attached to ports in the overlay
@@ -81,6 +81,11 @@ def generate_overlay(dts_filename):
     if bootrom is not None:
         chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&" + \
                                                                 bootrom.label + " 0>;"))
+
+    stdout = get_stdout(tree)
+    if stdout is not None:
+        chosen.properties.append(
+            pydevicetree.Property.from_dts("stdout-path = \"%s:100000000\";" % stdout.get_path()))
 
     return overlay.to_dts()
 
