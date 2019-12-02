@@ -100,11 +100,11 @@ def generate_overlay(argv):
     tree = pydevicetree.Devicetree.parseFile(argv[1])
 
     overlay = pydevicetree.Devicetree.from_dts("""
-    /dts-v1/;
+    /include/ "%s"
     / {
         chosen {};
     };
-    """)
+    """ % argv[1])
 
     attach_testrams(tree, overlay)
 
