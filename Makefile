@@ -12,8 +12,8 @@ venv/bin/activate:
 virtualenv: venv/bin/activate
 
 .PHONY: test-lint
-test-lint: venv/bin/activate generate_testbench_overlay.py
-	. $< && pylint generate_testbench_overlay
+test-lint: venv/bin/activate *.py
+	. $< && pylint *.py
 test: test-lint
 
 .PHONY: test

@@ -39,6 +39,7 @@ def get_boot_hart(tree):
     return riscv_harts[0]
 
 def number_to_cells(num, num_cells):
+    """Convert an integer into 32-bit cells"""
     cells = []
     for i in range(num_cells):
         cells.insert(0, (0xFFFFFFFF & (num >> (32 * i))))
@@ -91,20 +92,16 @@ def get_boot_rom(tree):
     sys.stderr.write("%s: Unable to determine test bench reset vector\n" % sys.argv[0])
     sys.exit(1)
 
-def generate_overlay(argv):
+def generate_overlay(dts_filename):
     """Generate the overlay"""
-    if len(argv) < 2:
-        print("Please provide a devicetree file")
-        sys.exit(1)
-
-    tree = pydevicetree.Devicetree.parseFile(argv[1])
+    tree = pydevicetree.Devicetree.parseFile(dts_filename)
 
     overlay = pydevicetree.Devicetree.from_dts("""
     /include/ "%s"
     / {
         chosen {};
     };
-    """ % argv[1])
+    """ % dts_filename)
 
     attach_testrams(tree, overlay)
 
