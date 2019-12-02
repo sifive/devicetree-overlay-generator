@@ -53,3 +53,4 @@ def get_stdout(tree):
         nodes = tree.match(compat)
         if len(nodes) > 0:
             return nodes[0]
+    return None

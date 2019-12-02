@@ -58,17 +58,8 @@ def get_boot_rom(tree):
     sys.stderr.write("%s: Unable to determine test bench reset vector\n" % sys.argv[0])
     sys.exit(1)
 
-def generate_overlay(dts_filename):
+def generate_overlay(tree, overlay):
     """Generate the overlay"""
-    tree = pydevicetree.Devicetree.parseFile(dts_filename)
-
-    overlay = pydevicetree.Devicetree.from_dts("""
-    /include/ "%s"
-    / {
-        chosen {};
-    };
-    """ % dts_filename)
-
     attach_testrams(tree, overlay)
 
     # Set boot hart in overlay
@@ -86,8 +77,3 @@ def generate_overlay(dts_filename):
     if stdout is not None:
         chosen.properties.append(
             pydevicetree.Property.from_dts("stdout-path = \"%s:100000000\";" % stdout.get_path()))
-
-    return overlay.to_dts()
-
-if __name__ == "__main__":
-    print(generate_overlay(sys.argv))
