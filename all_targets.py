@@ -8,6 +8,8 @@ These constants and functions are useful for all target types
 
 import itertools
 
+import pydevicetree
+
 PORT_PROTOCOLS = [
     "ahb",
     "apb",
@@ -34,6 +36,12 @@ STDOUT_DEVICES = [
     "ucb,htif0",
 ]
 
+def set_entry(overlay, node, offset):
+    """Set entry vector in overlay"""
+    chosen = overlay.get_by_path("/chosen")
+    chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&%s %d>;" % \
+                                                            (node.label, offset)))
+
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
     riscv_harts = tree.match("^riscv$")
@@ -41,6 +49,12 @@ def get_boot_hart(tree):
         if hart.get_reg()[0][0] == 1:
             return hart
     return riscv_harts[0]
+
+def set_boot_hart(tree, overlay):
+    """Set boot hart in overlay"""
+    chosen = overlay.get_by_path("/chosen")
+    chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <&" + \
+                                                            get_boot_hart(tree).label + ">;"))
 
 def number_to_cells(num, num_cells):
     """Convert an integer into 32-bit cells"""
@@ -56,3 +70,12 @@ def get_stdout(tree):
         if len(nodes) > 0:
             return nodes[0]
     return None
+
+def set_stdout(tree, overlay, baudrate):
+    """Set the stdout path and baud rate"""
+    chosen = overlay.get_by_path("/chosen")
+    stdout = get_stdout(tree)
+    if stdout is not None:
+        chosen.properties.append(
+            pydevicetree.Property.from_dts("stdout-path = \"%s:%d\";" % \
+                    (stdout.get_path(), baudrate)))

@@ -9,9 +9,7 @@ for the RTL DUT.
 
 import sys
 
-import pydevicetree
-
-from all_targets import get_boot_hart, get_stdout
+from all_targets import set_boot_hart, set_stdout, set_entry
 
 def get_spi_flash(tree):
     """Get the SPI Flash node"""
@@ -23,18 +21,9 @@ def get_spi_flash(tree):
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
-    # Set boot hart in overlay
-    chosen = overlay.get_by_path("/chosen")
-    chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <&" + \
-                                                            get_boot_hart(tree).label + ">;"))
-
-    # Set entry vector in overlay
     bootrom = get_spi_flash(tree)
     if bootrom is not None:
-        chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&" + \
-                                                                bootrom.label + " 0x400000>;"))
+        set_entry(overlay, bootrom, 0x400000)
 
-    stdout = get_stdout(tree)
-    if stdout is not None:
-        chosen.properties.append(
-            pydevicetree.Property.from_dts("stdout-path = \"%s:115200\";" % stdout.get_path()))
+    set_boot_hart(tree, overlay)
+    set_stdout(tree, overlay, 115200)
