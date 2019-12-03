@@ -1,2 +1,2 @@
-pydevicetree==0.0.9
+pydevicetree==0.0.10
 pylint
