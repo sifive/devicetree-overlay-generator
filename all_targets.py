@@ -39,8 +39,13 @@ STDOUT_DEVICES = [
 def set_entry(overlay, node, offset):
     """Set entry vector in overlay"""
     chosen = overlay.get_by_path("/chosen")
-    chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&%s %d>;" % \
-                                                            (node.label, offset)))
+    if node.label != "":
+        chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&%s %d>;" % \
+                                                                (node.label, offset)))
+    else:
+        chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&{%s} %d>;" % \
+                                                                (node.get_path(), offset)))
+
 
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
