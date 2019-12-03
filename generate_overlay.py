@@ -27,6 +27,8 @@ def main(argv):
     arg_parser.add_argument("-o", "--output",
                             help="The name of the output file. If not provided, \
                                   the overlay is printed to stdout.")
+    arg_parser.add_argument("--rename-include", help="Rename the path of the include file in \
+                                the generated overlay to the provided value.")
     arg_parser.add_argument("dts", help="The devicetree for the target")
 
     parsed_args = arg_parser.parse_args(argv)
@@ -44,12 +46,17 @@ def main(argv):
 
     tree = pydevicetree.Devicetree.parseFile(parsed_args.dts)
 
+    if parsed_args.rename_include:
+        include_path = parsed_args.rename_include
+    else:
+        include_path = parsed_args.dts
+
     overlay = pydevicetree.Devicetree.from_dts("""
     /include/ "%s"
     / {
         chosen {};
     };
-    """ % parsed_args.dts)
+    """ % include_path)
 
     if parsed_args.type == "rtl":
         testbench.generate_overlay(tree, overlay)
