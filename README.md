@@ -15,6 +15,30 @@ as well as sane defaults for things like:
 * The "boot hart" which does BSS initialization, etc.
 * The standard out path
 
+## Usage
+
+```
+usage: generate_overlay.py [-h] -t TYPE [-o OUTPUT]
+                           [--rename-include RENAME_INCLUDE]
+                           dts
+
+Generate Devicetree overlays
+
+positional arguments:
+  dts                   The devicetree for the target
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t TYPE, --type TYPE  The type of the target to generate an overlay for.
+                        Supported types include: rtl, arty
+  -o OUTPUT, --output OUTPUT
+                        The name of the output file. If not provided, the
+                        overlay is printed to stdout.
+  --rename-include RENAME_INCLUDE
+                        Rename the path of the include file in the generated
+                        overlay to the provided value.
+```
+
 ## Example
 
 Given the Devicetree for the SiFive E31 CoreIP, you can run the following:
