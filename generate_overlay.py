@@ -17,19 +17,19 @@ import arty
 
 SUPPORTED_TYPES = ["rtl", "arty"]
 
-def main():
+def main(argv):
     """Parse arguments and generate overlay"""
     arg_parser = argparse.ArgumentParser(description="Generate Devicetree overlays")
 
     arg_parser.add_argument("-t", "--type", required=True,
                             help="The type of the target to generate an overlay for. \
-                                Supported types include: rtl, arty")
+                                Supported types include: %s" % ", ".join(SUPPORTED_TYPES))
     arg_parser.add_argument("-o", "--output",
                             help="The name of the output file. If not provided, \
                                   the overlay is printed to stdout.")
     arg_parser.add_argument("dts", help="The devicetree for the target")
 
-    parsed_args = arg_parser.parse_args(sys.argv[1:])
+    parsed_args = arg_parser.parse_args(argv)
 
     if parsed_args.type not in SUPPORTED_TYPES:
         print("Type '%s' is not supported, please choose one of: %s" % (parsed_args.type,
@@ -63,4 +63,4 @@ def main():
         print(overlay)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
