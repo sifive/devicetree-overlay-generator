@@ -9,18 +9,11 @@ for the RTL DUT.
 
 from all_targets import set_boot_hart, set_stdout, set_entry
 
-def get_spi_flash(tree):
-    """Get the SPI Flash node"""
-    spi_nors = tree.match("jedec,spi-nor")
-    if len(spi_nors) == 0:
-        return None
-    return spi_nors[0].parent
-
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
-    bootrom = get_spi_flash(tree)
+    bootrom = tree.get_by_path("/memory")
     if bootrom is not None:
-        set_entry(overlay, bootrom, 0x400000)
+        set_entry(overlay, bootrom, 0)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)
