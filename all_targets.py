@@ -36,16 +36,22 @@ STDOUT_DEVICES = [
     "ucb,htif0",
 ]
 
+def get_reference(node):
+    """Get a Devicetree reference to a node
+
+    For example:
+     - With label: "serial0: uart@10013000 {};" -> "&serial0"
+     - Without label: "uart@10013000 {};" -> "&{/path/to/uart@10013000}"
+    """
+    if node.label != "":
+        return "&%s" % node.label
+    return "&{%s}" % node.get_path()
+
 def set_entry(overlay, node, offset):
     """Set entry vector in overlay"""
     chosen = overlay.get_by_path("/chosen")
-    if node.label != "":
-        chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&%s %d>;" % \
-                                                                (node.label, offset)))
-    else:
-        chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <&{%s} %d>;" % \
-                                                                (node.get_path(), offset)))
-
+    chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <%s %d>;" % \
+                                                            (get_reference(node), offset)))
 
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
@@ -58,8 +64,9 @@ def get_boot_hart(tree):
 def set_boot_hart(tree, overlay):
     """Set boot hart in overlay"""
     chosen = overlay.get_by_path("/chosen")
-    chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <&" + \
-                                                            get_boot_hart(tree).label + ">;"))
+    boot_hart = get_boot_hart(tree)
+    chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <%s>;" % \
+                                                            get_reference(boot_hart)))
 
 def number_to_cells(num, num_cells):
     """Convert an integer into 32-bit cells"""
