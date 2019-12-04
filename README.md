@@ -30,7 +30,8 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -t TYPE, --type TYPE  The type of the target to generate an overlay for.
-                        Supported types include: rtl, arty
+                        Supported types include: rtl, arty, qemu, hifive,
+                        spike
   -o OUTPUT, --output OUTPUT
                         The name of the output file. If not provided, the
                         overlay is printed to stdout.
