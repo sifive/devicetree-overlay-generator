@@ -68,6 +68,13 @@ def set_boot_hart(tree, overlay):
     chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <%s>;" % \
                                                             get_reference(boot_hart)))
 
+def get_spi_flash(tree):
+    """Get the SPI Flash node"""
+    spi_nors = tree.match("jedec,spi-nor")
+    if len(spi_nors) == 0:
+        return None
+    return spi_nors[0].parent
+
 def number_to_cells(num, num_cells):
     """Convert an integer into 32-bit cells"""
     cells = []

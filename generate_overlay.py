@@ -12,11 +12,7 @@ import sys
 
 import pydevicetree
 
-import testbench
-import arty
-import qemu
-import hifive
-import spike
+import targets
 
 SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike"]
 
@@ -62,15 +58,15 @@ def main(argv):
     """ % include_path)
 
     if "rtl" in parsed_args.type:
-        testbench.generate_overlay(tree, overlay)
+        targets.testbench.generate_overlay(tree, overlay)
     elif "arty" in parsed_args.type:
-        arty.generate_overlay(tree, overlay)
+        targets.arty.generate_overlay(tree, overlay)
     elif "qemu" in parsed_args.type:
-        qemu.generate_overlay(tree, overlay)
+        targets.qemu.generate_overlay(tree, overlay)
     elif "hifive" in parsed_args.type:
-        hifive.generate_overlay(tree, overlay)
+        targets.hifive.generate_overlay(tree, overlay)
     elif "spike" in parsed_args.type:
-        spike.generate_overlay(tree, overlay)
+        targets.spike.generate_overlay(tree, overlay)
 
     if parsed_args.output:
         with open(parsed_args.output, "w") as output_file:

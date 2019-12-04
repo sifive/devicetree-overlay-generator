@@ -7,20 +7,22 @@ This is a python script for generating RTL testbench Devicetree overlays from th
 for the RTL DUT.
 """
 
-from all_targets import set_boot_hart, set_stdout, set_entry
-
-def get_spi_flash(tree):
-    """Get the SPI Flash node"""
-    spi_nors = tree.match("jedec,spi-nor")
-    if len(spi_nors) == 0:
-        return None
-    return spi_nors[0].parent
+from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
     bootrom = get_spi_flash(tree)
+
+    model = tree.root().get_field("model")
+    if model == "sifive,hifive1":
+        offset = 0x400000
+    elif model == "sifive,hifive1-revb":
+        offset = 0x40000
+    else:
+        offset = 0x0
+
     if bootrom is not None:
-        set_entry(overlay, bootrom, 0x400000)
+        set_entry(overlay, bootrom, offset)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)

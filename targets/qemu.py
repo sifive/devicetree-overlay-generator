@@ -7,8 +7,7 @@ This is a python script for generating RTL testbench Devicetree overlays from th
 for the RTL DUT.
 """
 
-from all_targets import set_boot_hart, set_stdout, set_entry
-from arty import get_spi_flash
+from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
