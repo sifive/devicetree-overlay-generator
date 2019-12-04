@@ -11,8 +11,8 @@ import sys
 
 import pydevicetree
 
-from all_targets import PORTS, CAP_SIZE_FOR_VCS
-from all_targets import number_to_cells, set_boot_hart, set_stdout, set_entry
+from targets.generic import PORTS, CAP_SIZE_FOR_VCS
+from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry
 
 def attach_testrams(tree, overlay):
     """Generate testrams attached to ports in the overlay
