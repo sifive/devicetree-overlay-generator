@@ -47,11 +47,11 @@ def get_reference(node):
         return "&%s" % node.label
     return "&{%s}" % node.get_path()
 
-def set_entry(overlay, node, offset):
+def set_entry(overlay, node, tuple_index, offset):
     """Set entry vector in overlay"""
     chosen = overlay.get_by_path("/chosen")
-    chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <%s %d>;" % \
-                                                            (get_reference(node), offset)))
+    entry_prop = "metal,entry = <%s %d %d>;" % (get_reference(node), tuple_index, offset)
+    chosen.properties.append(pydevicetree.Property.from_dts(entry_prop))
 
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""

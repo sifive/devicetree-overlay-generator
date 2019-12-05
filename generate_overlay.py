@@ -32,7 +32,7 @@ def main(argv):
 
     parsed_args = arg_parser.parse_args(argv)
 
-    if parsed_args.type not in SUPPORTED_TYPES:
+    if not any([t in parsed_args.type for t in SUPPORTED_TYPES]):
         print("Type '%s' is not supported, please choose one of: %s" % (parsed_args.type,
                                                                         ', '.join(SUPPORTED_TYPES)))
         sys.exit(1)
