@@ -26,7 +26,7 @@ PORT_TYPES = [
 # The resulting order of the contents of PORTS is sensitive and should not be modified without
 # first consulting the RTL testbench developers or RTL simulation will break.
 PORTS = ["sifive,%s-%s-port" % (protocol, port_type) \
-             for protocol, port_type in itertools.product(PORT_PROTOCOLS, PORT_TYPES)]
+             for port_type, protocol in itertools.product(PORT_TYPES, PORT_PROTOCOLS)]
 
 CAP_SIZE_FOR_VCS = 0x1fffffff
 
