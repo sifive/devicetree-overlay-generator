@@ -14,9 +14,9 @@ def generate_overlay(tree, overlay):
     spi = get_spi_flash(tree)
     memory = tree.get_by_path("/memory")
     if spi is not None:
-        set_entry(overlay, spi, 0x400000)
+        set_entry(overlay, spi, 0, 0x400000)
     else:
-        set_entry(overlay, memory, 0x0)
+        set_entry(overlay, memory, 0, 0x0)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)

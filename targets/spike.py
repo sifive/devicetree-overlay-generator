@@ -13,7 +13,7 @@ def generate_overlay(tree, overlay):
     """Generate the overlay"""
     bootrom = tree.get_by_path("/memory")
     if bootrom is not None:
-        set_entry(overlay, bootrom, 0)
+        set_entry(overlay, bootrom, 0, 0)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)

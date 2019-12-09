@@ -67,7 +67,7 @@ def generate_overlay(tree, overlay):
 
     bootrom = get_boot_rom(tree)
     if bootrom is not None:
-        set_entry(overlay, bootrom, 0)
+        set_entry(overlay, bootrom, 0, 0)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 100000000)

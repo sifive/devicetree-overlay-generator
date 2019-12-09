@@ -22,7 +22,7 @@ def generate_overlay(tree, overlay):
         offset = 0x0
 
     if bootrom is not None:
-        set_entry(overlay, bootrom, offset)
+        set_entry(overlay, bootrom, 0, offset)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)

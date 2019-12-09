@@ -26,7 +26,7 @@ PORT_TYPES = [
 # The resulting order of the contents of PORTS is sensitive and should not be modified without
 # first consulting the RTL testbench developers or RTL simulation will break.
 PORTS = ["sifive,%s-%s-port" % (protocol, port_type) \
-             for protocol, port_type in itertools.product(PORT_PROTOCOLS, PORT_TYPES)]
+             for port_type, protocol in itertools.product(PORT_TYPES, PORT_PROTOCOLS)]
 
 CAP_SIZE_FOR_VCS = 0x1fffffff
 
@@ -47,11 +47,11 @@ def get_reference(node):
         return "&%s" % node.label
     return "&{%s}" % node.get_path()
 
-def set_entry(overlay, node, offset):
+def set_entry(overlay, node, tuple_index, offset):
     """Set entry vector in overlay"""
     chosen = overlay.get_by_path("/chosen")
-    chosen.properties.append(pydevicetree.Property.from_dts("metal,entry = <%s %d>;" % \
-                                                            (get_reference(node), offset)))
+    entry_prop = "metal,entry = <%s %d %d>;" % (get_reference(node), tuple_index, offset)
+    chosen.properties.append(pydevicetree.Property.from_dts(entry_prop))
 
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
