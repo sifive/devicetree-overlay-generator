@@ -36,6 +36,8 @@ STDOUT_DEVICES = [
     "ucb,htif0",
 ]
 
+SRAM_DEVICES = ["sifive,sram0"]
+
 def get_reference(node):
     """Get a Devicetree reference to a node
 
@@ -52,6 +54,68 @@ def set_entry(overlay, node, tuple_index, offset):
     chosen = overlay.get_by_path("/chosen")
     entry_prop = "metal,entry = <%s %d %d>;" % (get_reference(node), tuple_index, offset)
     chosen.properties.append(pydevicetree.Property.from_dts(entry_prop))
+
+def get_itim(tree, hart):
+    """Get the ITIM associated with the hart"""
+    itim_ref = hart.get_field("sifive,itim")
+    if itim_ref:
+        itim = tree.get_by_reference(itim_ref)
+        return itim
+    return None
+
+def get_dtim(tree, hart):
+    """Get the DTIM associated with the hart"""
+    dtim_ref = hart.get_field("sifive,dtim")
+    if dtim_ref:
+        dtim = tree.get_by_reference(dtim_ref)
+        return dtim
+    return None
+
+def get_rams(tree):
+    """Get the (ram, itim) tuple for the target"""
+    boot_hart = get_boot_hart(tree)
+
+    # Get any available srams in case we don't have an itim, dtim or memory
+    srams = []
+    for compatible in SRAM_DEVICES:
+        srams += tree.match(compatible)
+
+    memory = tree.get_by_path("/memory")
+    dtim = get_dtim(tree, boot_hart)
+
+    if memory:
+        ram = memory
+    elif dtim:
+        ram = dtim
+    elif len(srams) > 0:
+        ram = srams[0]
+
+    itim = get_itim(tree, boot_hart)
+    if not itim:
+        if len(srams) > 1:
+            itim = srams[1]
+        else:
+            itim = ram
+
+    return (ram, itim)
+
+def set_rams(overlay, ram, itim):
+    """Set the metal,ram and metal,itim properties"""
+    if itim:
+        set_itim(overlay, itim, 0, 0)
+    set_ram(overlay, ram, 0, 0)
+
+def set_itim(overlay, node, tuple_index, offset):
+    """Set itim in overlay"""
+    chosen = overlay.get_by_path("/chosen")
+    itim_prop = "metal,itim = <%s %d %d>;" % (get_reference(node), tuple_index, offset)
+    chosen.properties.append(pydevicetree.Property.from_dts(itim_prop))
+
+def set_ram(overlay, node, tuple_index, offset):
+    """Set ram in overlay"""
+    chosen = overlay.get_by_path("/chosen")
+    ram_prop = "metal,ram = <%s %d %d>;" % (get_reference(node), tuple_index, offset)
+    chosen.properties.append(pydevicetree.Property.from_dts(ram_prop))
 
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
