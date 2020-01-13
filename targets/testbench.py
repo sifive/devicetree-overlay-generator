@@ -12,7 +12,7 @@ import sys
 import pydevicetree
 
 from targets.generic import PORTS, CAP_SIZE_FOR_VCS
-from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry
+from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry, get_rams, set_rams
 
 def attach_testrams(tree, overlay):
     """Generate testrams attached to ports in the overlay
@@ -71,3 +71,6 @@ def generate_overlay(tree, overlay):
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 100000000)
+
+    ram, itim = get_rams(tree)
+    set_rams(overlay, ram, itim)
