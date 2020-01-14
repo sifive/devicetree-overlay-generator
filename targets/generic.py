@@ -89,6 +89,8 @@ def get_rams(tree):
         ram = dtim
     elif len(srams) > 0:
         ram = srams[0]
+    else:
+        ram = None
 
     itim = get_itim(tree, boot_hart)
     if not itim:
@@ -103,7 +105,8 @@ def set_rams(overlay, ram, itim):
     """Set the metal,ram and metal,itim properties"""
     if itim:
         set_itim(overlay, itim, 0, 0)
-    set_ram(overlay, ram, 0, 0)
+    if ram:
+        set_ram(overlay, ram, 0, 0)
 
 def set_itim(overlay, node, tuple_index, offset):
     """Set itim in overlay"""
