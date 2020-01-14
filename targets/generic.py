@@ -142,6 +142,14 @@ def get_spi_flash(tree):
         return None
     return spi_nors[0].parent
 
+def get_spi_region(spi_node):
+    """Get which reg tuple should be used for memory"""
+    tuples = spi_node.get_reg().tuples
+    for i, tup in enumerate(tuples):
+        if tup[2] == "mem":
+            return i
+    return 0
+
 def number_to_cells(num, num_cells):
     """Convert an integer into 32-bit cells"""
     cells = []
