@@ -72,4 +72,9 @@ def generate_overlay(tree, overlay):
     set_stdout(tree, overlay, 100000000)
 
     ram, itim = get_rams(tree)
+    
+    # If no RAM exists, put everything in the testram
+    if ram is None:
+        ram = bootrom
+
     set_rams(overlay, ram, itim)
