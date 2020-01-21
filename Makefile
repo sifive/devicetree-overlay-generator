@@ -16,6 +16,13 @@ test-lint: venv/bin/activate *.py
 	. $< && pylint *.py
 test: test-lint
 
+UNIT_TESTS = tests/test-rtl.py
+
+.PHONY: test-unit
+test-unit: venv/bin/activate $(UNIT_TESTS)
+	. $< && python -m unittest $(UNIT_TESTS)
+test: test-unit
+
 .PHONY: test
 test:
 

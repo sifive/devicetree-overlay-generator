@@ -14,42 +14,41 @@ import pydevicetree
 from targets.generic import PORTS, CAP_SIZE_FOR_VCS
 from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry, get_rams, set_rams
 
+def get_testram(port, label):
+    ranges = port.get_ranges()
+    address = ranges[0][0]
+    size = min(ranges[0][2], CAP_SIZE_FOR_VCS)
+
+    num_address_cells = port.get_field("#address-cells")
+    num_size_cells = port.get_field("#size-cells")
+
+    address_cells = number_to_cells(address, num_address_cells)
+    size_cells = number_to_cells(size, num_size_cells)
+
+    testram = pydevicetree.Node.from_dts("""
+        %s: testram@%x {
+            compatible = "sifive,testram0";
+            reg = <%s %s>;
+            reg-names = "mem";
+        };
+    """ % (label, address, address_cells, size_cells))
+
+    return testram
+
+
 def attach_testrams(tree, overlay):
     """Generate testrams attached to ports in the overlay
 
     Attached rams are also created in the in-memory tree so that they can be queried as if the
     overlay has been applied.
     """
-    testram_count = 0
-    for port in tree.match("sifive,.*port"):
-        ranges = port.get_ranges()
-        address = ranges[0][0]
-        size = min(ranges[0][2], CAP_SIZE_FOR_VCS)
+    for count, port in enumerate(tree.match("sifive,.*port")):
+        label = "testram%d" % count
 
-        num_address_cells = port.get_field("#address-cells")
-        num_size_cells = port.get_field("#size-cells")
+        testram = get_testram(port, label)
 
-        address_cells = number_to_cells(address, num_address_cells)
-        size_cells = number_to_cells(size, num_size_cells)
-
-        port.children.append(pydevicetree.Node.from_dts("""
-            testram%d: testram@%x {
-                compatible = "sifive,testram0";
-                reg = <%s %s>;
-                reg-names = "mem";
-            };
-        """ % (testram_count, address, address_cells, size_cells)))
-        overlay.children.append(pydevicetree.Node.from_dts("""
-        &%s {
-            testram%d: testram@%x {
-                compatible = "sifive,testram0";
-                reg = <%s %s>;
-                reg-names = "mem";
-            };
-        };
-        """ % (port.label, testram_count, address, address_cells, size_cells)))
-
-        testram_count += 1
+        port.add_child(testram)
+        overlay.children.append(pydevicetree.Node.from_dts("&%s { %s };" % (port.label, testram.to_dts())))
 
 def get_boot_rom(tree):
     """Given a tree with attached testrams, return the testram which contains the default reset
@@ -73,4 +72,9 @@ def generate_overlay(tree, overlay):
     set_stdout(tree, overlay, 100000000)
 
     ram, itim = get_rams(tree)
+    
+    # If no RAM exists, put everything in the testram
+    if ram is None:
+        ram = bootrom
+
     set_rams(overlay, ram, itim)
