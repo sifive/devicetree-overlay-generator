@@ -6,3 +6,4 @@ import targets.hifive
 import targets.qemu
 import targets.spike
 import targets.testbench
+import targets.vc707

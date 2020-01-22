@@ -14,7 +14,7 @@ import pydevicetree
 
 import targets
 
-SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike"]
+SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike", "vc707"]
 
 def main(argv):
     """Parse arguments and generate overlay"""
@@ -61,6 +61,8 @@ def main(argv):
         targets.testbench.generate_overlay(tree, overlay)
     elif "arty" in parsed_args.type:
         targets.arty.generate_overlay(tree, overlay)
+    elif "vc707" in parsed_args.type:
+        targets.vc707.generate_overlay(tree, overlay)
     elif "qemu" in parsed_args.type:
         targets.qemu.generate_overlay(tree, overlay)
     elif "hifive" in parsed_args.type:
