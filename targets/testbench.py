@@ -56,7 +56,17 @@ def get_boot_rom(tree):
     port_compatibles = list(map(lambda n: n.get_field("compatible"), tree.match("sifive,.*-port")))
     for port in PORTS:
         if port in port_compatibles:
-            return tree.match(port)[0].match("sifive,testram0")[0]
+            matching_ports = tree.match(port)
+            if matching_ports:
+                testrams = matching_ports[0].match("sifive,testram0")
+                if testrams:
+                    return testrams[0]
+
+    # Fall back to /memory node if no port exists
+    memory = tree.get_by_path("/memory")
+    if memory is not None:
+        return memory
+
     sys.stderr.write("%s: Unable to determine test bench reset vector\n" % sys.argv[0])
     sys.exit(1)
 
