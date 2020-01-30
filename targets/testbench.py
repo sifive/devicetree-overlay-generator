@@ -16,24 +16,28 @@ from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entr
 
 def get_testram(port, label):
     ranges = port.get_ranges()
-    address = ranges[0][0]
-    size = min(ranges[0][2], CAP_SIZE_FOR_VCS)
 
-    num_address_cells = port.get_field("#address-cells")
-    num_size_cells = port.get_field("#size-cells")
+    # The memory port may describe itself with the `reg` property, in which case there's no
+    # need to attach a testram.
+    if ranges is not None:
+        address = ranges[0][0]
+        size = min(ranges[0][2], CAP_SIZE_FOR_VCS)
 
-    address_cells = number_to_cells(address, num_address_cells)
-    size_cells = number_to_cells(size, num_size_cells)
+        num_address_cells = port.get_field("#address-cells")
+        num_size_cells = port.get_field("#size-cells")
 
-    testram = pydevicetree.Node.from_dts("""
-        %s: testram@%x {
-            compatible = "sifive,testram0";
-            reg = <%s %s>;
-            reg-names = "mem";
-        };
-    """ % (label, address, address_cells, size_cells))
+        address_cells = number_to_cells(address, num_address_cells)
+        size_cells = number_to_cells(size, num_size_cells)
 
-    return testram
+        testram = pydevicetree.Node.from_dts("""
+            %s: testram@%x {
+                compatible = "sifive,testram0";
+                reg = <%s %s>;
+                reg-names = "mem";
+            };
+        """ % (label, address, address_cells, size_cells))
+
+        return testram
 
 
 def attach_testrams(tree, overlay):
@@ -47,8 +51,9 @@ def attach_testrams(tree, overlay):
 
         testram = get_testram(port, label)
 
-        port.add_child(testram)
-        overlay.children.append(pydevicetree.Node.from_dts("&%s { %s };" % (port.label, testram.to_dts())))
+        if testram is not None:
+            port.add_child(testram)
+            overlay.children.append(pydevicetree.Node.from_dts("&%s { %s };" % (port.label, testram.to_dts())))
 
 def get_boot_rom(tree):
     """Given a tree with attached testrams, return the testram which contains the default reset
