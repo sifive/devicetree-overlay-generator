@@ -37,3 +37,13 @@ jobs:
             --rm \
             sifive/environment-blockci:0.3.0 \
             devicetree-overlay-generator/tests/test-wake-api.sh
+
+      - name: 'Run Custom Overlay Wake API Test'
+        run: |
+          set -euo pipefail
+          docker run \
+            --volume="$GITHUB_WORKSPACE/$WIT_WORKSPACE:/mnt/workspace" \
+            --workdir="/mnt/workspace" \
+            --rm \
+            sifive/environment-blockci:0.3.0 \
+            devicetree-overlay-generator/tests/test-custom-overlay.sh
