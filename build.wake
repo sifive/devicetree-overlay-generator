@@ -50,9 +50,7 @@ global def runDevicetreeOverlayGenerator options =
     # the --rename-include option.
     def renameInclude =
       def notdir str =
-        match (matches `.*/.*` str)
-          True  = extract `.*/(.*)` str | head | getOrElse ""
-          False = str
+        extract `.*/(.*)` str | head | getOrElse str
       "--rename-include", topDTSFile.getPathName.notdir,
       Nil
 
