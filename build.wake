@@ -16,7 +16,7 @@ def generatorDir = here
 # makeDevicetreeOverlayGeneratorOptions takes the following parameters:
 #   - topDTSFile: The top-level Devicetree source file
 #   - otherDTSFiles: any other Devicetree source files included in the
-#                    heirarchy of Devicetree source files
+#                    hierarchy of Devicetree source files
 #   - type: One of {rtl, arty, qemu, hifive, spike, vc707}
 #   - outputFile: A string representing the path of the output file to
 #                 produce
