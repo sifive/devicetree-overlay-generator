@@ -69,3 +69,29 @@ global def runDevicetreeOverlayGenerator options =
 # This allows the python virtualenv to be created prior to running a build
 # with `wake preinstall Unit`.
 publish preinstall = (pythonRequirementsInstaller generatorDir), Nil
+
+global def devicetreeOverlayGeneratorBuildTarget =
+  baseBuildTargetPlan "devicetree-overlay-generator"
+  | dependsOnFn "topDTSFile" (_)
+  | dependsOnOptionFn "otherDTSFiles" jNestedArrayMap
+  | dependsOn "type" jString
+  | dependsOn "outputFile" jString
+  | definedAs (
+    \topDTSFile
+    \otherDTSFiles
+    \type
+    \outputFile
+    \_
+    makeDevicetreeOverlayGeneratorOptions
+    topDTSFile
+    (getOrElse Nil otherDTSFiles)
+    type
+    outputFile
+    | runDevicetreeOverlayGenerator
+    | getJobOutput
+    | getPathResult
+  )
+  | exports bPath
+  | makeBuildTarget
+
+publish buildTargets = devicetreeOverlayGeneratorBuildTarget, Nil
