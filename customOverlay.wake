@@ -50,7 +50,7 @@ tuple DevicetreeCustomOverlay =
 global def makeDevicetreeCustomOverlay includes chosenNode =
   DevicetreeCustomOverlay includes chosenNode ""
 
-global def writeDevicetreeCustomOverlay file customOverlay =
+global target writeDevicetreeCustomOverlay file customOverlay =
   def makeInclude include =
     "/include/ \"{include}\"\n", Nil
   def includes = mapFlat makeInclude customOverlay.getDevicetreeCustomOverlayIncludes
