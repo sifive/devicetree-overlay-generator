@@ -7,3 +7,4 @@ import targets.qemu
 import targets.spike
 import targets.testbench
 import targets.vc707
+import targets.vcu118
