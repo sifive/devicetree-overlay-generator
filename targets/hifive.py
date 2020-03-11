@@ -17,7 +17,7 @@ def generate_overlay(tree, overlay):
     if model == "sifive,hifive1":
         offset = 0x400000
     elif model == "sifive,hifive1-revb":
-        offset = 0x40000
+        offset = 0x10000
     else:
         offset = 0x0
 
