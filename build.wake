@@ -21,8 +21,8 @@ def generatorDir = here
 #   - outputFile: A string representing the path of the output file to
 #                 produce
 #######################################################################
-global def makeDevicetreeOverlayGeneratorOptions topDTSFile otherDTSFiles type outputFile =
-  DevicetreeOverlayGeneratorOptions topDTSFile otherDTSFiles type outputFile
+global def makeDevicetreeOverlayGeneratorOptions topDTSFile otherDTSFiles type_ outputFile =
+  DevicetreeOverlayGeneratorOptions topDTSFile otherDTSFiles type_ outputFile
 
 global def runDevicetreeOverlayGenerator options =
   def topDTSFile = options.getDevicetreeOverlayGeneratorOptionsTopDTSFile
@@ -40,7 +40,7 @@ global def runDevicetreeOverlayGenerator options =
       "-o", options.getDevicetreeOverlayGeneratorOptionsOutputFile,
       Nil
 
-    def type =
+    def type_ =
       "-t", options.getDevicetreeOverlayGeneratorOptionsType,
       Nil
 
@@ -58,7 +58,7 @@ global def runDevicetreeOverlayGenerator options =
       topDTSFile.getPathName,
       Nil
 
-    output ++ type ++ renameInclude ++ dts
+    output ++ type_ ++ renameInclude ++ dts
 
   makePlan (pythonCommand "{generatorDir}/generate_overlay.py" args) inputs
   | addPlanRelativePath "PYTHONPATH" generatorDir
