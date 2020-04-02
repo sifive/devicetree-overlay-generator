@@ -16,6 +16,7 @@ import targets
 
 SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike", "vc707", "vcu118"]
 
+# pylint: disable=too-many-branches
 def main(argv):
     """Parse arguments and generate overlay"""
     arg_parser = argparse.ArgumentParser(description="Generate Devicetree overlays")
@@ -63,6 +64,8 @@ def main(argv):
         targets.arty.generate_overlay(tree, overlay)
     elif "vc707" in parsed_args.type:
         targets.vc707.generate_overlay(tree, overlay)
+    elif "vcu118" in parsed_args.type:
+        targets.vcu118.generate_overlay(tree, overlay)
     elif "qemu" in parsed_args.type:
         targets.qemu.generate_overlay(tree, overlay)
     elif "hifive" in parsed_args.type:
