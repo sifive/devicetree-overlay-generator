@@ -135,6 +135,13 @@ def set_boot_hart(tree, overlay):
     chosen.properties.append(pydevicetree.Property.from_dts("metal,boothart = <%s>;" % \
                                                             get_reference(boot_hart)))
 
+def set_ecc_scrub(tree, overlay):
+    """Set ecc scrub bit in overlay"""
+    chosen = overlay.get_by_path("/chosen")
+    if tree.match("sifive,buserror0"):
+        chosen.properties.append(pydevicetree.Property.from_dts("metal,eccscrub = <%d>;" % \
+                                                            ecc_scrub))
+
 def get_spi_flash(tree):
     """Get the SPI Flash node"""
     spi_nors = tree.match("jedec,spi-nor")
