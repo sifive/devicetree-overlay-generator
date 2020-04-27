@@ -139,7 +139,10 @@ def set_ecc_scrub(tree, overlay):
     """Set ecc scrub bit in overlay"""
     chosen = overlay.get_by_path("/chosen")
     if tree.match("sifive,buserror0"):
-        chosen.properties.append(pydevicetree.Property.from_dts("metal,eccscrub = <%d>;" % \
+        ecc_scrub = 1
+    else:
+        ecc_scrub = 0
+    chosen.properties.append(pydevicetree.Property.from_dts("metal,eccscrub = <%d>;" % \
                                                             ecc_scrub))
 
 def get_spi_flash(tree):
