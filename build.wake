@@ -69,3 +69,24 @@ global def runDevicetreeOverlayGenerator options =
 # This allows the python virtualenv to be created prior to running a build
 # with `wake preinstall Unit`.
 publish preinstall = (pythonRequirementsInstaller generatorDir), Nil
+
+#########################################################################
+# installDevicetreeOverlayGenerator allows wake flows to install the
+# overlay generator in customer deliveries and exclude all content which
+# does not directly contribute to the generation of customer BSP content.
+# It takes the following parameter
+#   - installPath: the path to install the generator in
+# For example, if you call `installDevicetreeOverlayGenerator "scripts"`
+# the generator script will be found in
+#   scripts/devicetree-overlay-generator/generate_overlay.py
+#########################################################################
+global target installDevicetreeOverlayGenerator installPath =
+  def generatorSources =
+    source "{here}/README.md",
+    source "{here}/LICENSE",
+    source "{here}/generate_overlay.py",
+    sources "{here}/targets" `.*\.py`
+
+  mkdir installPath,
+
+  map (installIn installPath) generatorSources
