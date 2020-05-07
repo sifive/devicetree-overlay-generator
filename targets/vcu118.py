@@ -17,7 +17,6 @@ def generate_overlay(tree, overlay):
         set_entry(overlay, bootrom, 0, 0)
 
     set_boot_hart(tree, overlay)
-    set_ecc_scrub(tree, overlay)
     set_stdout(tree, overlay, 115200)
 
     ram, itim = get_rams(tree)
