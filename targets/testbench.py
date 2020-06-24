@@ -12,7 +12,7 @@ import sys
 import pydevicetree
 
 from targets.generic import PORTS, CAP_SIZE_FOR_VCS
-from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry, get_rams, set_rams, set_ecc_scrub
+from targets.generic import number_to_cells, set_boot_hart, set_stdout, set_entry, get_rams, set_rams, set_ecc_scrub, get_reference
 
 def get_testram(port, label):
     ranges = port.get_ranges()
@@ -84,9 +84,12 @@ def generate_overlay(tree, overlay):
         set_entry(overlay, bootrom, 0, 0)
 
     set_boot_hart(tree, overlay)
-    set_ecc_scrub(tree, overlay)
 
     ram, itim = get_rams(tree)
+
+    # Do scrub If ROM and RAM is not the same node
+    if get_reference(bootrom) != get_reference(ram):
+        set_ecc_scrub(tree, overlay)
     
     # If no RAM exists, put everything in the testram
     if ram is None:
