@@ -87,12 +87,12 @@ def generate_overlay(tree, overlay):
 
     ram, itim = get_rams(tree)
 
-    # Do scrub If ROM and RAM is not the same node
-    if get_reference(bootrom) != get_reference(ram):
-        set_ecc_scrub(tree, overlay)
-    
     # If no RAM exists, put everything in the testram
     if ram is None:
         ram = bootrom
+
+    # Do scrub If ROM and RAM is not the same node
+    if get_reference(bootrom) != get_reference(ram):
+        set_ecc_scrub(tree, overlay)
 
     set_rams(overlay, ram, itim)
