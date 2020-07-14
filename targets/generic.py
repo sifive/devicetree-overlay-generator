@@ -144,6 +144,30 @@ def set_ecc_scrub(tree, overlay):
         ecc_scrub = 0
     chosen.properties.append(pydevicetree.Property.from_dts("metal,eccscrub = <%d>;" % \
                                                             ecc_scrub))
+def set_lim(tree, overlay):
+    ccache = tree.match("sifive,ccache0")
+
+    if ccache:
+        block_size = ccache[0].get_field("cache-block-size")
+        sets = ccache[0].get_field("cache-sets")
+        size = ccache[0].get_field("cache-size") - (sets * block_size)
+
+        if len(ccache[0].get_reg()) == 2:
+            address = ccache[0].get_reg()[1][0]
+            address_cells = number_to_cells(address, 2)
+            size_cells = number_to_cells(size, 1)
+
+            lim0 = pydevicetree.Node.from_dts("""
+                %s: lim@%x {
+                    compatible = "sifive,lim";
+                    reg = <%s %s>;
+                    reg-names = "mem";
+                };
+            """ % ("lim0", address, address_cells, size_cells))
+
+            if lim0 is not None:
+                ccache[0].add_child(lim0)
+                overlay.children.append(pydevicetree.Node.from_dts("&%s { %s };" % (ccache[0].label, lim0.to_dts())))
 
 def get_spi_flash(tree):
     """Get the SPI Flash node"""

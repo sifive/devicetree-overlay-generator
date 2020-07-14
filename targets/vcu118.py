@@ -8,7 +8,7 @@ for the core on the VCU118.
 """
 
 from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash
-from targets.generic import get_spi_region, get_rams, set_rams, get_dtim, get_boot_hart, set_ecc_scrub
+from targets.generic import get_spi_region, get_rams, set_rams, get_dtim, get_boot_hart, set_lim
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
@@ -26,4 +26,5 @@ def generate_overlay(tree, overlay):
     if dtim is not None:
         ram = dtim
 
+    set_lim(tree, overlay)
     set_rams(overlay, ram, itim)
