@@ -7,7 +7,7 @@ This is a python script for generating VC707 Devicetree overlays from the Device
 for the core on the VC707.
 """
 
-from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash
+from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash, set_lim
 from targets.generic import get_spi_region, get_rams, set_rams, get_dtim, get_boot_hart
 
 def generate_overlay(tree, overlay):
@@ -26,4 +26,5 @@ def generate_overlay(tree, overlay):
     if dtim is not None:
         ram = dtim
 
+    set_lim(tree, overlay)
     set_rams(overlay, ram, itim)

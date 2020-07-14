@@ -7,7 +7,7 @@ This is a python script for generating RTL testbench Devicetree overlays from th
 for the RTL DUT.
 """
 
-from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash, get_spi_region, get_rams, set_rams, set_ram, set_itim
+from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash, get_spi_region, get_rams, set_rams, set_ram, set_itim, set_lim
 
 SRAM_SPLIT_MIN_SIZE = 0x10000
 
@@ -37,4 +37,5 @@ def generate_overlay(tree, overlay):
             set_itim(overlay, ram, 0, size / 2)
             return
 
+    set_lim(tree, overlay)
     set_rams(overlay, ram, itim)
