@@ -4,13 +4,11 @@ set -euo pipefail
 
 OUTPUT_PATH="build/devicetree-overlay-generator/customOverlay.dts"
 
-wake --init .
-
-wake -v "writeDevicetreeCustomOverlay \"${OUTPUT_PATH}\" \
-                                      (makeDevicetreeCustomOverlay (\"core.dts\", Nil) \
-                                                                   (makeDevicetreeChosenNode (makeDevicetreeChosenMemoryEntry \"/soc/bootrom@20000000\" 0 0) \
-                                                                                             (makeDevicetreeChosenMemoryRam \"/soc/sram@80000000\" 0 0) \
-                                                                                             None))"
+wake -vx "writeDevicetreeCustomOverlay \"${OUTPUT_PATH}\" \
+                                       (makeDevicetreeCustomOverlay (\"core.dts\", Nil) \
+                                                                    (makeDevicetreeChosenNode (makeDevicetreeChosenMemoryEntry \"/soc/bootrom@20000000\" 0 0) \
+                                                                                              (makeDevicetreeChosenMemoryRam \"/soc/sram@80000000\" 0 0) \
+                                                                                              None))"
 
 >&2 echo "$0: Checking for ${OUTPUT_PATH}"
 if [ ! -f ${OUTPUT_PATH} ] ; then

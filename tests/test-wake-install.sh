@@ -4,9 +4,7 @@ set -euo pipefail
 
 INSTALL_PATH="install-path"
 
-wake --init .
-
-wake -v "installDevicetreeOverlayGenerator \"${INSTALL_PATH}\""
+wake -vx "installDevicetreeOverlayGenerator \"${INSTALL_PATH}\""
 
 >&2 echo "$0: Checking for ${INSTALL_PATH}"
 if [ ! -d ${INSTALL_PATH} ] ; then
