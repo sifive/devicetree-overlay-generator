@@ -31,9 +31,10 @@ global def runDevicetreeOverlayGenerator options =
   def inputs =
     def generatorSources = sources here `.*\.py`
     def dtsSources = topDTSFile, otherDTSFiles
-    generatorSources ++ dtsSources
+    def outputDir = mkdir "{output}/.."
+    outputDir, generatorSources ++ dtsSources
 
-  def outputs = options.getDevicetreeOverlayGeneratorOptionsOutputFile, Nil
+  def output = options.getDevicetreeOverlayGeneratorOptionsOutputFile
 
   def args =
     def output =
@@ -63,7 +64,7 @@ global def runDevicetreeOverlayGenerator options =
   makePlan (pythonCommand "{generatorDir}/generate_overlay.py" args) inputs
   | addPlanRelativePath "PYTHONPATH" generatorDir
   | addPythonRequirementsEnv generatorDir
-  | setPlanFnOutputs (\_ outputs)
+  | setPlanFnOutputs (\_ output, Nil)
   | runJob
 
 # This allows the python virtualenv to be created prior to running a build
