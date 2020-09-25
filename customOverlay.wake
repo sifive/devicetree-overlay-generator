@@ -25,6 +25,10 @@ tuple DevicetreeChosenMemory =
   global RegTuple:  Integer
   global RegOffset: Integer
 
+tuple DevicetreeChosenHart =
+  global Property:  String
+  global NodePath:  String
+
 global def makeDevicetreeChosenMemoryEntry nodePath regTuple regOffset =
   DevicetreeChosenMemory "metal,entry" nodePath regTuple regOffset
 
@@ -34,13 +38,17 @@ global def makeDevicetreeChosenMemoryRam nodePath regTuple regOffset =
 global def makeDevicetreeChosenMemoryItim nodePath regTuple regOffset =
   DevicetreeChosenMemory "metal,itim" nodePath regTuple regOffset
 
+global def makeDevicetreeChosenBootHart nodePath =
+  DevicetreeChosenHart "metal,boothart" nodePath
+
 tuple DevicetreeChosenNode =
   global Entry: DevicetreeChosenMemory
   global Ram:   DevicetreeChosenMemory
   global Itim:  Option DevicetreeChosenMemory
+  global Hart:  Option DevicetreeChosenHart
 
-global def makeDevicetreeChosenNode entry ram itim =
-  DevicetreeChosenNode entry ram itim
+global def makeDevicetreeChosenNode entry ram itim hart =
+  DevicetreeChosenNode entry ram itim hart
 
 tuple DevicetreeCustomOverlay =
   global Includes:           List String
@@ -64,14 +72,23 @@ global target writeDevicetreeCustomOverlay file customOverlay =
 
       "    {property} = <{reference} {regTuple} {regOffset}>;\n"
 
+    def makeLineForHart chosenHart =
+      def property = chosenHart.getDevicetreeChosenHartProperty
+      def reference = "&\{{chosenHart.getDevicetreeChosenHartNodePath}\}"
+
+      "    {property} = <{reference}>;\n"
+
     def chosenNode = customOverlay.getDevicetreeCustomOverlayChosenNode
     def entry = makeLine chosenNode.getDevicetreeChosenNodeEntry
     def ram = makeLine chosenNode.getDevicetreeChosenNodeRam
     def itim = match chosenNode.getDevicetreeChosenNodeItim
       Some chosenMemory = makeLine chosenMemory
       None = ""
+    def hart = match chosenNode.getDevicetreeChosenNodeHart
+      Some chosenHart = makeLineForHart chosenHart
+      None = ""
 
-    "  chosen \{\n{entry}{ram}{itim}  \};\n"
+    "  chosen \{\n{entry}{ram}{itim}{hart}  \};\n"
 
   def rootNode = "/ \{\n{chosenContents}\};"
 
