@@ -17,6 +17,12 @@
 # makeDevicetreeCustomOverlay ("core.dts", Nil) chosenNode
 # | (writeDevicetreeCustomOverlay "design.dts" _)
 #
+# --------
+# If you want to specify the boothart, you can set it explicitly as below
+#
+# def chosenNode =
+#   makeDevicetreeChosenNode entry ram itim
+#   | setDevicetreeChosenNodeHart(Some(makeDevicetreeChosenBootHart "/cpus/cpu@0"))
 
 
 tuple DevicetreeChosenMemory =
@@ -47,8 +53,8 @@ tuple DevicetreeChosenNode =
   global Itim:  Option DevicetreeChosenMemory
   global Hart:  Option DevicetreeChosenHart
 
-global def makeDevicetreeChosenNode entry ram itim hart =
-  DevicetreeChosenNode entry ram itim hart
+global def makeDevicetreeChosenNode entry ram itim =
+  DevicetreeChosenNode entry ram itim None
 
 tuple DevicetreeCustomOverlay =
   global Includes:           List String
