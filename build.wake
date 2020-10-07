@@ -70,7 +70,7 @@ global def runDevicetreeOverlayGenerator options =
 # with `wake preinstall Unit`.
 publish preinstall = (pythonRequirementsInstaller generatorDir), Nil
 
-#########################################################################
+
 # installDevicetreeOverlayGenerator allows wake flows to install the
 # overlay generator in customer deliveries and exclude all content which
 # does not directly contribute to the generation of customer BSP content.
@@ -86,7 +86,9 @@ global target installDevicetreeOverlayGenerator installPath =
     source "{here}/LICENSE",
     source "{here}/generate_overlay.py",
     sources "{here}/targets" `.*\.py`
-
+  def installWithStructure dir file =
+    def oneDown = simplify "{here}/.."
+    def into = "{dir}/{relative oneDown file.getPathName}"
+    installAs into file
   mkdir installPath,
-
-  map (installIn installPath) generatorSources
+  map (installWithStructure installPath) generatorSources
