@@ -14,7 +14,7 @@ import pydevicetree
 
 import targets
 
-SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike", "vc707", "vcu118"]
+SUPPORTED_TYPES = ["rtl", "arty", "qemu", "hifive", "spike", "vc707", "vcu118","sifive-nb2"]
 
 # pylint: disable=too-many-branches
 def main(argv):
