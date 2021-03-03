@@ -19,6 +19,7 @@ PORT_PROTOCOLS = [
 
 PORT_TYPES = [
     "periph",
+    "local-sys",
     "sys",
     "mem",
 ]
