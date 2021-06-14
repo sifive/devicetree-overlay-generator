@@ -109,6 +109,14 @@ def set_rams(overlay, ram, itim):
     if ram:
         set_ram(overlay, ram, 0, 0)
 
+def set_rams(overlay, ram, itim, region):
+    """Set the metal,ram and metal,itim properties"""
+    if itim:
+        set_itim(overlay, itim, region, 0)
+    if ram:
+        set_ram(overlay, ram, region, 0)
+
+
 def set_itim(overlay, node, tuple_index, offset):
     """Set itim in overlay"""
     chosen = overlay.get_by_path("/chosen")
@@ -145,6 +153,20 @@ def set_ecc_scrub(tree, overlay):
         ecc_scrub = 0
     chosen.properties.append(pydevicetree.Property.from_dts("metal,eccscrub = <%d>;" % \
                                                             ecc_scrub))
+
+def get_ccache(tree):
+    """Get ccache node"""
+    ccache = tree.match("sifive,ccache0")
+    if len(ccache) > 0:
+        return ccache[0]
+
+def get_ccache_region(ccache_node):
+    """Get which reg tuple should be used for memory"""
+    tuples = ccache_node.get_reg().tuples
+    for i, tup in enumerate(tuples):
+        if tup[2] == "sideband":
+            return i
+    return 0
 
 def get_spi_flash(tree):
     """Get the SPI Flash node"""
