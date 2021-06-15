@@ -7,7 +7,9 @@ This is a python script for generating RTL testbench Devicetree overlays from th
 for the RTL DUT.
 """
 
-from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash, get_spi_region, get_rams, set_rams
+from targets.generic import set_boot_hart, set_stdout, set_entry, get_spi_flash, get_spi_region, get_rams, set_rams, get_ccache, get_ccache_region, set_ram, set_itim
+
+#def attach_testrams(tree, overlay):
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
@@ -28,5 +30,11 @@ def generate_overlay(tree, overlay):
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)
 
-    ram, itim = get_rams(tree)
-    set_rams(overlay, ram, itim)
+    if model == "sifive,hifive-unmatched-a00" or \
+       model == "sifive,hifive-unleashed-a00":
+        ram = itim = ccache = get_ccache(tree)
+        region = get_ccache_region(ccache)
+        set_rams(overlay, ram, itim, region)
+    else:
+        ram, itim = get_rams(tree)
+        set_rams(overlay, ram, itim)
