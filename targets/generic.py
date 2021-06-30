@@ -159,6 +159,10 @@ def get_ccache(tree):
     ccache = tree.match("sifive,ccache0")
     if len(ccache) > 0:
         return ccache[0]
+    ccache = tree.match("cache")
+    if len(ccache) > 0:
+        return ccache[0]
+    return None
 
 def get_ccache_region(ccache_node):
     """Get which reg tuple should be used for memory"""
