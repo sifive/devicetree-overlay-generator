@@ -102,14 +102,7 @@ def get_rams(tree):
 
     return (ram, itim)
 
-def set_rams(overlay, ram, itim):
-    """Set the metal,ram and metal,itim properties"""
-    if itim:
-        set_itim(overlay, itim, 0, 0)
-    if ram:
-        set_ram(overlay, ram, 0, 0)
-
-def set_rams(overlay, ram, itim, region):
+def set_rams(overlay, ram, itim, region=0):
     """Set the metal,ram and metal,itim properties"""
     if itim:
         set_itim(overlay, itim, region, 0)
