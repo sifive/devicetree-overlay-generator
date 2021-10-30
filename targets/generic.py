@@ -33,6 +33,7 @@ CAP_SIZE_FOR_VCS = 0x1fffffff
 
 STDOUT_DEVICES = [
     "sifive,uart0",
+    "sifive,uart1",
     "sifive,trace",
     "ucb,htif0",
 ]
