@@ -12,9 +12,12 @@ from targets.generic import get_spi_region, get_rams, set_rams, get_dtim, get_bo
 
 def generate_overlay(tree, overlay):
     """Generate the overlay"""
-    bootrom = tree.get_by_path("/memory")
-    if bootrom is not None:
-        set_entry(overlay, bootrom, 0, 0)
+    ddr = tree.get_by_path("/memory")
+    bootram = tree.get_by_path("/soc/boot-memory")
+    if ddr is not None:
+        set_entry(overlay, ddr, 0, 0)
+    elif bootram is not None:
+        set_entry(overlay, bootram, 0, 0)
 
     set_boot_hart(tree, overlay)
     set_stdout(tree, overlay, 115200)
