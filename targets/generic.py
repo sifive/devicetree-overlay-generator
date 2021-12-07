@@ -125,6 +125,9 @@ def set_ram(overlay, node, tuple_index, offset):
 def get_boot_hart(tree):
     """Given a tree, return the node which should be used as the boot hart"""
     riscv_harts = tree.match("^riscv$")
+    is_worlguard = tree.match("sifive,worldguard1")
+    if is_worlguard:
+        return riscv_harts[0]
     for hart in riscv_harts:
         if hart.get_reg()[0][0] == 1:
             return hart
