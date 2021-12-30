@@ -152,7 +152,7 @@ def set_ecc_scrub(tree, overlay):
 
 def get_ccache(tree):
     """Get ccache node"""
-    ccache = tree.match("sifive,ccache0")
+    ccache = tree.match("sifive,ccache[01]")
     if len(ccache) > 0:
         return ccache[0]
 
